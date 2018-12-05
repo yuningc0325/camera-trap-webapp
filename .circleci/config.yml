@@ -33,7 +33,13 @@ orbs:
               key: dist#{{ .Revision }}
           - aws/install
           - aws/configure
-          - run: aws s3 sync dist 's3://dev.camera-trap.tw' --delete
+          - run: |
+              BUCKET=dev.camera-trap.tw
+              if [ $CIRCLE_BRANCH = prod ]
+              then
+                BUCKET=camera-trap.tw
+              fi
+              aws s3 sync dist "s3://$BUCKET" --delete
       run:
         parameters:
           command:
